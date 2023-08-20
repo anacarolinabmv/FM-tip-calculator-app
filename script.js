@@ -11,6 +11,7 @@ const btnReset = document.getElementById('btn--reset');
 const errorLabel = document.getElementById('error');
 
 const init = function () {
+  btnReset.disabled = true;
   billEl.value = '';
   customTipEl.value = '';
   peopleEl.value = '';
@@ -57,6 +58,10 @@ const calcTotal = function () {
   totalEl.textContent = totalPerson;
 };
 
+const enableResetBtn = function () {
+  btnReset.disabled = false;
+};
+
 //Show and restore errors
 const renderError = function () {
   errorLabel.classList.add('display--error');
@@ -79,6 +84,7 @@ peopleEl.addEventListener('keydown', (event) => {
     return;
   }
 
+  enableResetBtn();
   calcTotal();
 });
 

@@ -10,7 +10,10 @@ const totalEl = document.getElementById('total');
 const btnReset = document.getElementById('btn--reset');
 const errorLabel = document.getElementById('error');
 
+let tip;
+
 const init = function () {
+  tip = 0;
   btnReset.disabled = true;
   billEl.value = '';
   customTipEl.value = '';
@@ -21,17 +24,6 @@ const init = function () {
 };
 init();
 
-const getTip = function () {
-  const arr = Array.from(btnsTips);
-  const btnTip = arr.find((btn) => btn.classList.contains('btn--pressed'));
-
-  let tip = btnTip ? +btnTip.firstChild.textContent : +customTipEl.value;
-
-  if (!tip) tip = 0;
-
-  return tip;
-};
-
 //Add background color to pressed button
 btnsTipContainer.addEventListener('click', function (event) {
   btnsTips.forEach((btn) => btn.classList.remove('btn--pressed'));
@@ -40,12 +32,14 @@ btnsTipContainer.addEventListener('click', function (event) {
   if (!target) return;
   target.classList.add('btn--pressed');
 
-  getTip();
+  tip = +target.firstChild.textContent;
+
+  if (!billEl.value || !peopleEl.value) return;
+  calcTotal();
 });
 
-//Calc and render tip and bill amounts
+//Calculate and render tip and bill amounts
 const calcTotal = function () {
-  const tip = getTip();
   const bill = +billEl.value;
   const people = +peopleEl.value;
 
@@ -56,6 +50,8 @@ const calcTotal = function () {
 
   tipAmountEl.textContent = tipPerson;
   totalEl.textContent = totalPerson;
+
+  enableResetBtn();
 };
 
 const enableResetBtn = function () {
@@ -73,20 +69,38 @@ const restoreError = function () {
   peopleEl.classList.remove('error--border');
 };
 
-peopleEl.addEventListener('click', restoreError);
+//****Event listeners****
 
-//Submit form on Enter
-peopleEl.addEventListener('keydown', (event) => {
-  if (event.key !== 'Enter') return;
-
-  if (!peopleEl.value) {
-    renderError();
-    return;
-  }
-
-  enableResetBtn();
+//Calculate tip on submit/change
+document.addEventListener('keydown', (event) => {
+  if (!event.key === 'Enter') return;
+  if (!billEl.value || !peopleEl.value || !tip) return;
   calcTotal();
 });
 
-//Restore default UI
+billEl.addEventListener('change', function () {
+  if (!tip || !peopleEl.value) return;
+  calcTotal();
+});
+
+peopleEl.addEventListener('change', function () {
+  if (!peopleEl.value || peopleEl.value == 0) {
+    renderError();
+    return;
+  }
+  if (!tip || !billEl.value) return;
+  calcTotal();
+});
+
+//Restore input error
+peopleEl.addEventListener('focus', restoreError);
+peopleEl.addEventListener('click', restoreError);
+
+customTipEl.addEventListener('change', function () {
+  tip = +customTipEl.value;
+  if (!billEl.value || !peopleEl.value) return;
+  calcTotal();
+});
+
+//Reset initial UI
 btnReset.addEventListener('click', init);

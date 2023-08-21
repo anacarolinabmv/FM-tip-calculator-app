@@ -92,7 +92,7 @@ svg {
 }
 #people::placeholder,
 #bill::placeholder {
-  color: var(--very-dark-cyan);
+  color: var(--light-grayish-cyan);
 }
 .bill--value {
   margin-bottom: 4rem;
@@ -133,7 +133,7 @@ svg {
 .grid--tip input[type='number']::placeholder {
   text-align: center;
   font-size: 2.4rem;
-  color: var(--dark-grayish-cyan);
+  color: var(--light-grayish-cyan);
 }
 
 input[type='number'],
@@ -228,7 +228,9 @@ button:active {
 .attribution a {
   color: var(--very-dark-cyan);
 }
-
+input[type='number']::placeholder {
+  color: red;
+}
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
